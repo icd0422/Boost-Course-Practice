@@ -4,32 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="wrap_content"
+    <com.example.boostcoursepractice.BitmapButton
+        android:id="@+id/button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_review_selected"
-        />
-
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_review_selected2"
-        />
-
-
-    <ImageView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_review_selected"
-        />
-
-
-    <ImageView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_review_selected2"
-        />
-
-
+        android:text="안녕하세요" />
 </LinearLayout>
