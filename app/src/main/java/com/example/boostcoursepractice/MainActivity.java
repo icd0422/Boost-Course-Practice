@@ -1,10 +1,12 @@
 package com.example.boostcoursepractice;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,80 +29,33 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    SingerAdapter adapter;
+    Button menuBtn ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GridView gridView = (GridView) findViewById(R.id.grid_view);
+        menuBtn = (Button) findViewById(R.id.menu_btn) ;
 
-        adapter = new SingerAdapter();
-
-        adapter.addItem(new SingerItem("장주느", "010-5212-7024", R.drawable.ic_launcher_background));
-        adapter.addItem(new SingerItem("장주느1", "010-52024", R.drawable.ic_launcher_background));
-        adapter.addItem(new SingerItem("장주느2", "010-51-7024", R.drawable.ic_launcher_background));
-        adapter.addItem(new SingerItem("장주느3", "0-5-7024", R.drawable.ic_launcher_background));
-        adapter.addItem(new SingerItem("장주4", "010-59-7024", R.drawable.ic_launcher_background));
-        adapter.addItem(new SingerItem("장주5", "-52 -7024", R.drawable.ic_launcher_background));
-
-        gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SingerItem item = (SingerItem) adapter.getItem(i);
-                Toast.makeText(getApplicationContext(), item.toString(), Toast.LENGTH_LONG).show();
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
+                startActivityForResult(intent, 101);
             }
         });
 
-
-
     }
 
-    class SingerAdapter extends BaseAdapter
-    {
-        ArrayList<SingerItem> items = new ArrayList<SingerItem>() ;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        public void addItem(SingerItem item)
+        if(requestCode ==101)
         {
-            items.add(item);
-        }
-
-        @Override
-        public int getCount() {
-            return items.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return items.get(i);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            SingerItemView singerItemView = null ;
-
-            if(view == null)
-            {
-                singerItemView = new SingerItemView(getApplicationContext());
-            }
-            else
-            {
-                singerItemView = (SingerItemView) view;
-            }
-
-            SingerItem item = items.get(i) ;
-            singerItemView.setName(item.getName());
-            singerItemView.setMobile(item.getMobile());
-            singerItemView.setImg(item.getResID());
-
-            return singerItemView;
+            String name = data.getStringExtra("name");
+            Toast.makeText(getApplicationContext(), "메뉴화면으로부터 응답 : " + name , Toast.LENGTH_SHORT).show();
         }
     }
 }
