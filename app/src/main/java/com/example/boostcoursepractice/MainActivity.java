@@ -4,9 +4,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +17,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,33 +33,31 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button menuBtn ;
+    EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        menuBtn = (Button) findViewById(R.id.menu_btn) ;
+        Button button = (Button) findViewById(R.id.button3);
+        editText = (EditText) findViewById(R.id.editText);
 
-        menuBtn.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                startActivityForResult(intent, 101);
+                String receiver = editText.getText().toString();
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+receiver));
+                startActivity(intent);
+
+                Intent intent2 = new Intent();
+                ComponentName componentName = new ComponentName("com.example.boostcoursepractice", "com.example.boostcoursepractice.MenuActivity");
+                intent2.setComponent(componentName);
+                startActivity(intent2);
+
+                
             }
         });
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode ==101)
-        {
-            String name = data.getStringExtra("name");
-            Toast.makeText(getApplicationContext(), "메뉴화면으로부터 응답 : " + name , Toast.LENGTH_SHORT).show();
-        }
     }
 }
