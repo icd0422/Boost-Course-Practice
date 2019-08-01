@@ -33,31 +33,33 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText editText;
+    Button menuBtn ;
+    String[] names = {"김준수", "황수연", "차두리"} ;
+    static int k =3 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = (Button) findViewById(R.id.button3);
-        editText = (EditText) findViewById(R.id.editText);
-
-        button.setOnClickListener(new View.OnClickListener() {
+        menuBtn = (Button) findViewById(R.id.button);
+        menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String receiver = editText.getText().toString();
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+receiver));
-                startActivity(intent);
+                Intent intent =new Intent(getApplicationContext(), MenuActivity.class);
 
-                Intent intent2 = new Intent();
-                ComponentName componentName = new ComponentName("com.example.boostcoursepractice", "com.example.boostcoursepractice.MenuActivity");
-                intent2.setComponent(componentName);
-                startActivity(intent2);
+                ArrayList<String> names = new ArrayList<String>() ;
+                names.add("김건모");
+                names.add("조정치");
+                intent.putExtra("names", names);
 
-                
+                SimpleData simpleData = new SimpleData(27,"김미미");
+                intent.putExtra("simpleData", simpleData);
+
+                startActivityForResult(intent, 101);
             }
         });
-
     }
+
+
 }
