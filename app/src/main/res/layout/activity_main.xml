@@ -5,7 +5,7 @@ android:layout_height="match_parent"
     >
 
     <Button
-        android:id="@+id/btn_close"
+        android:id="@+id/btn_start_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -14,5 +14,21 @@ android:layout_height="match_parent"
         android:layout_marginEnd="155dp"
         android:layout_marginRight="155dp"
         android:layout_marginBottom="340dp"
-        android:text="화면 닫기" />
+        android:text="서비스 시작" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_start_service"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="274dp"
+        android:layout_marginEnd="88dp"
+        android:layout_marginRight="88dp"
+        android:layout_marginBottom="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="소녀시대" />
 </RelativeLayout>
