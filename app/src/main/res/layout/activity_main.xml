@@ -1,39 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="시작" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@id/button"
-        android:text="메뉴" />
-
-    <FrameLayout
-        android:id="@+id/frame_layout"
+    <fragment
+        android:id="@+id/list_fragment"
+        android:name="com.example.boostcoursepractice.ListFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/button">
-        <!--
-        <fragment
-            android:id="@+id/fragment"
-            android:name="com.example.boostcoursepractice.MainFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        -->
-    </FrameLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"></fragment>
+
+    <fragment
+        android:id="@+id/viewer_fragment"
+        android:name="com.example.boostcoursepractice.ViewerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"></fragment>
 
 
-
-
-</RelativeLayout>
+</LinearLayout>

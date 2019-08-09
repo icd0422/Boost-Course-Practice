@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -15,51 +16,32 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
-    Button button ;
-    Button button2 ;
-    MainFragment mainFragment;
-    SubFragment subFragment;
-    //FrameLayout frameLayout ;
+    ListFragment fragment1 ;
+    ViewerFragment fragment2 ;
+
+    FragmentManager manager ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mainFragment = new MainFragment();
-        subFragment  = new SubFragment();
+        manager = getSupportFragmentManager();
 
-        button = (Button) findViewById(R.id.button);
-        button2 = (Button) findViewById(R.id.button2);
-        //        //frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
+        fragment1 = (ListFragment) manager.findFragmentById(R.id.list_fragment) ;
+        fragment2 = (ViewerFragment) manager.findFragmentById(R.id.viewer_fragment);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //getSupportFragmentManager().beginTransaction().add(R.id.frame_layout, mainFragment).commit();
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, mainFragment).commit();
-            }
-        });
-
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, subFragment).commit();
-            }
-        });
     }
 
-    public void chageFragement(int n)
+    public void onImageChange(int index)
     {
-        if(n == 0)
-        {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, mainFragment).commit();
-        }
-        else if(n==1)
-        {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, subFragment).commit();
-        }
+        fragment2.setImage(index);
+
     }
+
 }
 
