@@ -2,22 +2,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-
-    <fragment
-        android:id="@+id/list_fragment"
-        android:name="com.example.boostcoursepractice.ListFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"></fragment>
-
-    <fragment
-        android:id="@+id/viewer_fragment"
-        android:name="com.example.boostcoursepractice.ViewerFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"></fragment>
-
-
-</LinearLayout>
+    android:orientation="vertical"/>

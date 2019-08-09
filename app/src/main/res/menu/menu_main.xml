@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="12세"
+        android:id="@+id/menu_12"
+        android:icon="@drawable/ic_12"
+        app:showAsAction="always"/>
+
+    <item android:title="15세"
+        android:id="@+id/menu_15"
+        android:icon="@drawable/ic_15"
+        app:showAsAction="always|withText"
+        app:actionLayout="@layout/search_layout"/>
+
+    <item android:title="19세"
+        android:id="@+id/menu_19"
+        android:icon="@drawable/ic_19"
+        app:showAsAction="always"/>
+
+</menu>

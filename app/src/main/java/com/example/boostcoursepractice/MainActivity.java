@@ -1,6 +1,7 @@
 package com.example.boostcoursepractice;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -10,6 +11,8 @@ import androidx.fragment.app.FragmentManager;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,28 +23,47 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    ListFragment fragment1 ;
-    ViewerFragment fragment2 ;
-
-    FragmentManager manager ;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        manager = getSupportFragmentManager();
+       /* ActionBar abar = getSupportActionBar();
+        abar.hide();*/
 
-        fragment1 = (ListFragment) manager.findFragmentById(R.id.list_fragment) ;
-        fragment2 = (ViewerFragment) manager.findFragmentById(R.id.viewer_fragment);
-
-    }
-
-    public void onImageChange(int index)
-    {
-        fragment2.setImage(index);
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int curId = item.getItemId();
+
+        switch (curId) {
+            case R.id.menu_12:
+                Toast.makeText(this, "12클릭됨", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.menu_15:
+                Toast.makeText(this, "15클릭됨", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.menu_19:
+                Toast.makeText(this, "19클릭됨", Toast.LENGTH_SHORT).show();
+                break;
+
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
 
