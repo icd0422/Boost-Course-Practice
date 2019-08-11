@@ -9,12 +9,7 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="세 번째 화면"
+        android:text="세번째"
         android:textSize="40dp" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="다음" />
 </LinearLayout>

@@ -8,6 +8,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -24,61 +26,56 @@ import android.widget.Toolbar;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-    Fragment1 fragment1;
-    Fragment2 fragment2;
-    Fragment3 fragment3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        androidx.appcompat.widget.Toolbar toolbar = (androidx.appcompat.widget.Toolbar ) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ViewPager pager = (ViewPager) findViewById(R.id.pager) ;
+        pager.setOffscreenPageLimit(3);
 
-        fragment1 = new Fragment1();
-        fragment2 = new Fragment2();
-        fragment3 = new Fragment3() ;
+        MoviePagerAdapter moviePagerAdapter = new MoviePagerAdapter(getSupportFragmentManager());
 
-        getSupportFragmentManager().beginTransaction().add(R.id.container, fragment1).commit();
+        Fragment fragment1 = new Fragment1();
+        moviePagerAdapter.addItem(fragment1);
 
-        TabLayout tabs= (TabLayout)findViewById(R.id.tabs);
-        tabs.addTab(tabs.newTab().setText("친구"));
-        tabs.addTab(tabs.newTab().setText("일대일 채팅"));
-        tabs.addTab(tabs.newTab().setText("기타"));
+        Fragment fragment2 = new Fragment2();
+        moviePagerAdapter.addItem(fragment2);
 
-        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                int position = tab.getPosition();
+        Fragment fragment3 = new Fragment3();
+        moviePagerAdapter.addItem(fragment3);
 
-                Fragment selectedFragment = null ;
-                if(position == 0 ) {
-                    selectedFragment = fragment1;
-                } else  if(position == 1 ) {
-                    selectedFragment = fragment2;
-                } else  if(position == 2 ) {
-                    selectedFragment = fragment3;
-                }
+        pager.setAdapter(moviePagerAdapter);
+    }
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, selectedFragment).commit();
+    class MoviePagerAdapter extends FragmentStatePagerAdapter
+    {
+        ArrayList<Fragment> items = new ArrayList<Fragment>();
 
-            }
+        public MoviePagerAdapter(FragmentManager fm) {
+            super(fm);
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+        }
 
-            }
+        public void addItem(Fragment item)
+        {
+            items.add(item);
+        }
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+        @Override
+        public Fragment getItem(int position) {
+            return items.get(position);
+        }
 
-            }
-        });
+        @Override
+        public int getCount() {
+            return items.size();
+        }
     }
 }
 
