@@ -1,6 +1,7 @@
 package com.example.boostcoursepractice;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,12 +32,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    ViewPager pager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ViewPager pager = (ViewPager) findViewById(R.id.pager) ;
+        pager = (ViewPager) findViewById(R.id.pager);
         pager.setOffscreenPageLimit(3);
 
         MoviePagerAdapter moviePagerAdapter = new MoviePagerAdapter(getSupportFragmentManager());
@@ -51,19 +54,24 @@ public class MainActivity extends AppCompatActivity {
         moviePagerAdapter.addItem(fragment3);
 
         pager.setAdapter(moviePagerAdapter);
+
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pager.setCurrentItem(1);
+            }
+        });
     }
 
-    class MoviePagerAdapter extends FragmentStatePagerAdapter
-    {
+    class MoviePagerAdapter extends FragmentStatePagerAdapter {
         ArrayList<Fragment> items = new ArrayList<Fragment>();
 
         public MoviePagerAdapter(FragmentManager fm) {
             super(fm);
-
         }
 
-        public void addItem(Fragment item)
-        {
+        public void addItem(Fragment item) {
             items.add(item);
         }
 
@@ -75,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return items.size();
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "페이지" + position;
         }
     }
 }
