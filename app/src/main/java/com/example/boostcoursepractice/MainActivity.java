@@ -1,95 +1,135 @@
 package com.example.boostcoursepractice;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+
+import androidx.core.view.GravityCompat;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+
+import android.view.MenuItem;
+
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+
+import android.view.Menu;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import com.google.android.material.tabs.TabLayout;
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MainActivity extends AppCompatActivity {
-
-    ViewPager pager;
+    Fragment fragment1 ;
+    Fragment fragment2;
+    Fragment fragment3 ;
+    Toolbar toolbar ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        pager = (ViewPager) findViewById(R.id.pager);
-        pager.setOffscreenPageLimit(3);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
 
-        MoviePagerAdapter moviePagerAdapter = new MoviePagerAdapter(getSupportFragmentManager());
+        fragment1 = new Fragment1();
+        fragment2 = new Fragment2();
+        fragment3 = new Fragment3() ;
 
-        Fragment fragment1 = new Fragment1();
-        moviePagerAdapter.addItem(fragment1);
-
-        Fragment fragment2 = new Fragment2();
-        moviePagerAdapter.addItem(fragment2);
-
-        Fragment fragment3 = new Fragment3();
-        moviePagerAdapter.addItem(fragment3);
-
-        pager.setAdapter(moviePagerAdapter);
-
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pager.setCurrentItem(1);
-            }
-        });
+        getSupportFragmentManager().beginTransaction().add(R.id.container, fragment1).commit();
     }
 
-    class MoviePagerAdapter extends FragmentStatePagerAdapter {
-        ArrayList<Fragment> items = new ArrayList<Fragment>();
+    @Override
+    public void onFragmentSelected(int position, Bundle bundle) {
+        Fragment curFragment = null ;
 
-        public MoviePagerAdapter(FragmentManager fm) {
-            super(fm);
+        if(position == 0)
+        {
+            curFragment = fragment1 ;
+            toolbar.setTitle("첫번째 화면");
         }
 
-        public void addItem(Fragment item) {
-            items.add(item);
+        else if(position == 1)
+        {
+            curFragment = fragment2 ;
+            toolbar.setTitle("두번째 화면");
         }
 
-        @Override
-        public Fragment getItem(int position) {
-            return items.get(position);
+        else if(position == 2)
+        {
+            curFragment = fragment3 ;
+            toolbar.setTitle("세번째 화면");
         }
 
-        @Override
-        public int getCount() {
-            return items.size();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, curFragment).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
 
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "페이지" + position;
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_0) {
+            Toast.makeText(this, "첫번째 화면 선택됨", Toast.LENGTH_SHORT).show();
+            onFragmentSelected(0, null);
+        } else if (id == R.id.nav_1) {
+            Toast.makeText(this, "두번째 화면 선택됨", Toast.LENGTH_SHORT).show();
+            onFragmentSelected(1, null);
+        } else if (id == R.id.nav_2) {
+            Toast.makeText(this, "세번째 화면 선택됨", Toast.LENGTH_SHORT).show();
+            onFragmentSelected(2, null);
         }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
 
