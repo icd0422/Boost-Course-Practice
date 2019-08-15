@@ -31,175 +31,67 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
 public class MainActivity extends AppCompatActivity {
 
-    TextView textView;
-    ValueHandler valueHandler;
-    Handler handler2;
-
-    int value = 0;
-    boolean running = true;
+    Button button;
+    TextView textView ;
+    Handler handler ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        valueHandler = new ValueHandler();
-
-        handler2 = new Handler();
-
-        textView = (TextView) findViewById(R.id.textView);
-
-        Button button = (Button) findViewById(R.id.button);
-
+        handler = new Handler() ;
+        textView = (TextView) findViewById(R.id.textView) ;
+        button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //new BackgroundThread().start();
+                new ClientThread().start();
+            }
+        });
+    }
 
-                new Thread(new Runnable() {
+    class ClientThread extends Thread {
 
-                    int threadValue = 0;
-                    //int value = 0;
+        @Override
+        public void run() {
+            //super.run();
+            String host = "localhost";
+            int port = 5001;
 
+            try {
+                Socket socket = new Socket(host, port);
+
+                ObjectOutputStream outstream = new ObjectOutputStream(socket.getOutputStream());
+                outstream.writeObject("안녕!");
+                outstream.flush();
+                Log.d("ClientThread", "서버로 보냄.");
+
+                ObjectInputStream instream  = new ObjectInputStream(socket.getInputStream());
+                final Object input = instream.readObject() ;
+                Log.d("ClientThread", "받은 데이터 : " + input);
+
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        running = true;
-                        while (running) {
-                            //value += 1;
-                            threadValue += 1;
-                            handler2.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    value += 1;
-                                    textView.setText("현재 값" + value);
-                                }
-                            });
-
-                            try {
-                                Thread.sleep(1);
-                            } catch (Exception e) {
-                            }
-                        }
-
-                        Log.d("JJH", "threadValue 값 : " + threadValue);
-                        //Log.d("JJH", "value 값 : " + value);
+                        textView.setText("받은 데이터 : " + input);
                     }
-                }).start();
-            }
-        });
+                }) ;
 
-        Button button2 = (Button) findViewById(R.id.button2);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //new BackgroundThread().start();
-                new AsyncBackground().execute();
-            }
-        });
-
-        Button button3 = (Button) findViewById(R.id.button3);
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                running = false;
-            }
-        });
-
-        Button button4 = (Button) findViewById(R.id.button4);
-        button4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //textView.setText("현재 값 : " + value);
-            }
-        });
-    }
-
-    class BackgroundThread extends Thread {
-
-        int threadValue = 0;
-        //int value = 0;
-
-        public void run() {
-            running = true;
-            while (running) {
-                //value += 1;
-                threadValue += 1;
-                Message message = valueHandler.obtainMessage();
-                //Bundle bundle = new Bundle();
-                //bundle.putInt("value", value);
-                //message.setData(bundle);
-                valueHandler.sendMessage(message);
-                try {
-                    Thread.sleep(1);
-                } catch (Exception e) {
-                }
+                socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            Log.d("JJH", "threadValue 값 : " + threadValue);
-            //Log.d("JJH", "value 값 : " + value);
-        }
-
-
-    }
-
-    class ValueHandler extends Handler {
-
-        int sum = 0;
-
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-
-            value += 1;
-            //Bundle bundle = msg.getData();
-            //int value = bundle.getInt("value");
-
-            textView.setText("현재 값 : " + value);
-            //textView.setText("메세지큐의 마지막 값 : " + value);
         }
     }
 
-    class AsyncBackground extends AsyncTask<String, Integer, Integer> {
-        int threadValue = 0;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            running = true;
-        }
-
-        @Override
-        protected Integer doInBackground(String... strings) {
-            while (running) {
-                threadValue += 1;
-                publishProgress();
-                try {
-                    Thread.sleep(1);
-                } catch (Exception e) {
-                }
-
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-
-            value += 1;
-            textView.setText("현재 값 : " + value);
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-
-            Log.d("JJH", "threadValue 값 : " + threadValue);
-        }
-    }
 }
 
 
