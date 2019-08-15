@@ -1,5 +1,6 @@
 package com.example.boostcoursepractice;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView textView;
     ValueHandler valueHandler;
+    Handler handler2;
 
     int value = 0;
     boolean running = true;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         valueHandler = new ValueHandler();
 
-        final Handler handler2 = new Handler();
+        handler2 = new Handler();
 
         textView = (TextView) findViewById(R.id.textView);
 
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                             handler2.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    value+=1;
+                                    value += 1;
                                     textView.setText("현재 값" + value);
                                 }
                             });
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        Log.d("JJH","threadValue 값 : " + threadValue);
+                        Log.d("JJH", "threadValue 값 : " + threadValue);
                         //Log.d("JJH", "value 값 : " + value);
                     }
                 }).start();
@@ -92,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new BackgroundThread().start();
+                //new BackgroundThread().start();
+                new AsyncBackground().execute();
             }
         });
 
@@ -134,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            Log.d("JJH","threadValue 값 : " + threadValue );
+            Log.d("JJH", "threadValue 값 : " + threadValue);
             //Log.d("JJH", "value 값 : " + value);
         }
 
@@ -149,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
 
-            value+=1 ;
+            value += 1;
             //Bundle bundle = msg.getData();
             //int value = bundle.getInt("value");
 
@@ -157,7 +160,48 @@ public class MainActivity extends AppCompatActivity {
             //textView.setText("메세지큐의 마지막 값 : " + value);
         }
     }
+
+    class AsyncBackground extends AsyncTask<String, Integer, Integer> {
+        int threadValue = 0;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            running = true;
+        }
+
+        @Override
+        protected Integer doInBackground(String... strings) {
+            while (running) {
+                threadValue += 1;
+                publishProgress();
+                try {
+                    Thread.sleep(1);
+                } catch (Exception e) {
+                }
+
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+
+            value += 1;
+            textView.setText("현재 값 : " + value);
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+
+            Log.d("JJH", "threadValue 값 : " + threadValue);
+        }
+    }
 }
+
 
 
 
