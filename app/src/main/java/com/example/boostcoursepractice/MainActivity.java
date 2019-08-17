@@ -1,5 +1,6 @@
 package com.example.boostcoursepractice;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -27,64 +28,74 @@ import androidx.fragment.app.Fragment;
 
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button button;
-    TextView textView ;
-    Handler handler ;
+    EditText editText;
+    TextView textView;
+    Handler handler = new Handler() ;
+    String urlStr ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        handler = new Handler() ;
-        textView = (TextView) findViewById(R.id.textView) ;
-        button = (Button) findViewById(R.id.button);
+        editText = (EditText) findViewById(R.id.editText);
+        textView = (TextView) findViewById(R.id.textView);
+        Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new ClientThread().start();
+                urlStr = editText.getText().toString();
+                RequestThread thread = new RequestThread();
+                thread.start();
             }
         });
+
+
     }
 
-    class ClientThread extends Thread {
-
+    class RequestThread extends Thread {
         @Override
         public void run() {
-            //super.run();
-            String host = "localhost";
-            int port = 5001;
+            super.run();
 
             try {
-                Socket socket = new Socket(host, port);
+                URL url = new URL(urlStr);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                if (conn != null) {
+                    conn.setConnectTimeout(10000);
+                    conn.setRequestMethod("GET");
+                    conn.setDoInput(true);
+                    conn.setDoOutput(true);
 
-                ObjectOutputStream outstream = new ObjectOutputStream(socket.getOutputStream());
-                outstream.writeObject("안녕!");
-                outstream.flush();
-                Log.d("ClientThread", "서버로 보냄.");
+                    int resCode = conn.getResponseCode();
 
-                ObjectInputStream instream  = new ObjectInputStream(socket.getInputStream());
-                final Object input = instream.readObject() ;
-                Log.d("ClientThread", "받은 데이터 : " + input);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    String line = null ;
 
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        textView.setText("받은 데이터 : " + input);
+                    while(true)
+                    {
+                        line = reader.readLine() ;
+                        if(line == null) break ;
+
+                        println(line);
                     }
-                }) ;
+                }
 
-                socket.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -92,6 +103,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void println(final String data) {
+
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                textView.append(data + "\n");
+            }
+        });
+    }
 }
 
 
