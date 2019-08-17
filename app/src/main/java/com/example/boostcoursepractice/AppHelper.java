@@ -1,4 +1,10 @@
 package com.example.boostcoursepractice;
 
-public class AppHelper {
+import com.android.volley.RequestQueue;
+
+public class AppHelper
+{
+    public static RequestQueue requestQueue;
+
+    
 }
