@@ -1,7 +1,9 @@
 package com.example.boostcoursepractice;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -22,13 +24,13 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText editText ;
-    EditText editText2 ;
-    EditText editText3 ;
-    EditText editText4 ;
-    EditText editText5  ;
+    EditText editText;
+    EditText editText2;
+    EditText editText3;
+    EditText editText4;
+    EditText editText5;
     TextView textView;
-    SQLiteDatabase database ;
+    SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
                 String ageStr = editText4.getText().toString().trim();
                 String mobile = editText5.getText().toString().trim();
 
-                int age = -1 ;
-                try{
+                int age = -1;
+                try {
                     age = Integer.parseInt(ageStr);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -94,77 +96,107 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void openDatabase(String databaseName)
-    {
+    public void openDatabase(String databaseName) {
         println("openDatabase() 호출됨");
+
+        /*
         database = openOrCreateDatabase(databaseName, MODE_PRIVATE, null);
 
-        if(database != null)
-        {
+        if (database != null) {
             println("데이터 베이스 오픈됨");
         }
+        */
+
+        DatabaseHelper helper = new DatabaseHelper(this, databaseName, null, 3 );
+        database = helper.getWritableDatabase();
 
     }
 
-    public void createTable(String tableName)
-    {
+    public void createTable(String tableName) {
         println("crateTable() 호출됨");
 
-        if(database !=null)
-        {
-            String sql = "create table " + tableName + "(_id integer PRIMARY KEY autoincrement , name text, age integer, mobile text) ";
+        if (database != null) {
+            String sql = "create table if not exists " + tableName + "(_id integer PRIMARY KEY autoincrement , name text, age integer, mobile text) ";
             database.execSQL(sql);
 
             println("테이블 생성됨.");
-        }else{
+        } else {
             println("먼저 데이터베이스를 오픈하세요");
         }
     }
 
-    public void insertData(String name, int age, String mobile)
-    {
+    public void insertData(String name, int age, String mobile) {
         println("insertData() 호출됨");
 
-        if(database != null)
-        {
+        if (database != null) {
             String sql = "insert into customer(name, age, mobile) values(?,?,?)";
             Object[] params = {name, age, mobile};
 
             database.execSQL(sql, params);
             println("데이터 추가됨");
-        }else{
+        } else {
             println("먼저 데이터베이스를 오픈하세요.");
         }
     }
 
-    public void selectData(String tableName)
-    {
+    public void selectData(String tableName) {
         println("selectData() 호출됨");
 
-        if(database != null)
-        {
-            String sql = "select name, age, mobile from " + tableName ;
+        if (database != null) {
+            String sql = "select name, age, mobile from " + tableName;
             Cursor cursor = database.rawQuery(sql, null);
             println("조회된 데이터 개수 : " + cursor.getCount());
 
-            for(int i=0 ; i<cursor.getCount() ; i++)
-            {
+            for (int i = 0; i < cursor.getCount(); i++) {
                 cursor.moveToNext();
                 String name = cursor.getString(0);
                 int age = cursor.getInt(1);
-                String mobile = cursor.getString(2) ;
+                String mobile = cursor.getString(2);
 
                 println("#" + i + "->" + name + ", " + age + ", " + mobile);
             }
 
             cursor.close();
+        } else {
+            println("먼저 데이터베이스를 오픈하세요.");
         }
     }
 
 
-    public void println(String s)
-    {
-        textView.append(s+"\n");
+    public void println(String s) {
+        textView.append(s + "\n");
     }
+
+    class DatabaseHelper extends SQLiteOpenHelper {
+
+        public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+            super(context, name, factory, version);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase sqLiteDatabase) {
+            println("onCreate() 호출됨");
+
+            String tableName = "customer";
+
+            String sql = "create table if not exists " + tableName + "(_id integer PRIMARY KEY autoincrement , name text, age integer, mobile text) ";
+            sqLiteDatabase.execSQL(sql);
+
+            println("테이블 생성됨.");
+
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+            println("onUpgrade() 호출됨" + i + ", " + i1) ;
+
+            if(i1 > 1)
+            {
+                String tableName = "customer" ;
+                sqLiteDatabase.execSQL("drop table if exists " + tableName);
+            }
+        }
+    }
+
 
 }
