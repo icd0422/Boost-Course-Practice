@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,19 +32,16 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView imageView ;
-
-    File file ;
+    ImageView imageView;
+    CameraSurfaceView surfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        File sdcard = Environment.getExternalStorageDirectory() ;
-        file = new File(sdcard, "capture.jpg");
-
         imageView = (ImageView) findViewById(R.id.imageView);
+        surfaceView = (CameraSurfaceView) findViewById(R.id.surfaceView);
 
         Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -52,26 +50,22 @@ public class MainActivity extends AppCompatActivity {
                 capture();
             }
         });
+
+
     }
 
-    public void capture()
-    {
+    public void capture() {
+        surfaceView.capture(new Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] bytes, Camera camera) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 8 ;
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
 
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+                imageView.setImageBitmap(bitmap);
 
-        startActivityForResult(intent, 101);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == 101 && resultCode == Activity.RESULT_OK) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 8 ;
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-            imageView.setImageBitmap(bitmap);
-        }
+                camera.startPreview();
+            }
+        });
     }
 }
