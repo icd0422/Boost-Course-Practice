@@ -10,18 +10,23 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="사진찍기" />
+        android:text="재생" />
 
-    <ImageView
-        android:id="@+id/imageView"
+    <Button
+        android:id="@+id/button2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:srcCompat="@android:drawable/sym_def_app_icon" />
+        android:layout_height="wrap_content"
+        android:text="일시정지" />
 
-    <com.example.boostcoursepractice.CameraSurfaceView
-        android:id="@+id/surfaceView"
+    <Button
+        android:id="@+id/button3"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="wrap_content"
+        android:text="재시작" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="정지" />
 </LinearLayout>
